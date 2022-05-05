@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.11.3)
 
 # set(CMAKE_CXX_STANDARD 17)
-project(traffic_simulation)
+project(OSM_A_star_search)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pthread")
 
 set(OpenCV_DIR /Users/matthiaswagner/Development/C++/opencv-4.5.4/build_opencv)
