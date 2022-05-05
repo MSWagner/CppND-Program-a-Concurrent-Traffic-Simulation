@@ -47,7 +47,6 @@ void TrafficLight::waitForGreen()
     // FP.5b : add the implementation of the method waitForGreen, in which an infinite while-loop 
     // runs and repeatedly calls the receive function on the message queue. 
     // Once it receives TrafficLightPhase::green, the method returns.
-
     while (true)
     {
         // sleep at every iteration to reduce CPU usage
@@ -82,31 +81,31 @@ void TrafficLight::cycleThroughPhases()
     // Also, the while-loop should use std::this_thread::sleep_for to wait 1ms between two cycles.
 
     // initalize variables
-    int cycleDuration = 0; // duration of a single simulation cycle in ms
+    double cycleDuration = 0; // duration of a single simulation cycle in ms
     std::chrono::time_point<std::chrono::system_clock> lastUpdate;
 
     // init stop watch
-    lastUpdate = std::chrono::system_clock::now();
+    auto startTime = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration;
+
+    // pick one street at random and query intersection to enter this street
+    std::random_device rd;
+    std::mt19937 eng(rd());
+    std::uniform_real_distribution<double> distr(4.0, 6.0);
+    cycleDuration = distr(eng);
+    std::cout << "cycleDuration: " << cycleDuration << std::endl;
+
     while (true)
     {
         // sleep at every iteration to reduce CPU usage
         std::this_thread::sleep_for(std::chrono::milliseconds(1));
 
-        if (cycleDuration == 0)
-        {
-            // pick one street at random and query intersection to enter this street
-            std::random_device rd;
-            std::mt19937 eng(rd());
-            std::uniform_int_distribution<> distr(4000, 6000);
-            cycleDuration = distr(eng);
-        }
+        duration = std::chrono::high_resolution_clock::now() - startTime;
 
-        // compute time difference to stop watch
-        long timeSinceLastUpdate = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - lastUpdate).count();
-        if (timeSinceLastUpdate >= cycleDuration)
+        if (duration.count() >= cycleDuration)
         {
-            std::cout << "timeSinceLastUpdate :" << timeSinceLastUpdate << std::endl;
-            cycleDuration = 0;
+            cycleDuration = distr(eng);
+            startTime = std::chrono::high_resolution_clock::now();
 
             if (_currentPhase == TrafficLightPhase::red)
             {
